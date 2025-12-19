@@ -5,5 +5,5 @@ export const MENU_ITEMS = [
   { label: "Wallet", href: "/wallet" },
   { label: "Orders", href: "/orders" },
   { label: "Gifts", href: "/gifts" },
-  { label: "Credit Transfer", href: "/credit-transfer" },
+  { label: "Credit Transfer", href: "/credit" },
 ];

@@ -4,24 +4,34 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { MENU_ITEMS } from "./MenuItems";
-import { useUserStore } from "@/app/store/userStore";
 import { Button } from "@/components/ui/button";
+import { useSession, signOut } from "@/lib/auth-client";
+import { queryClient } from "@/app/providers";
 
 export default function DesktopMenu() {
   const pathname = usePathname();
-  const { user, logout } = useUserStore();
   const router = useRouter();
 
-  const handleLoginLogout = () => {
-    if (user) logout();
-    else router.push("/login");
+  const { data: session, isPending } = useSession();
+  const user = session?.user;
+
+  const handleLoginLogout = async () => {
+    if (user) {
+      await signOut();
+      queryClient.removeQueries({queryKey:['userList']})
+      router.replace("/login");
+    } else {
+      router.push("/login");
+    }
   };
 
   return (
     <nav className="hidden md:flex gap-8 items-center">
       {MENU_ITEMS.map((item) => {
         const isActive =
-          item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+          item.href === "/"
+            ? pathname === "/"
+            : pathname.startsWith(item.href);
 
         return (
           <Link
@@ -39,7 +49,12 @@ export default function DesktopMenu() {
       })}
 
       {/* Login / Logout Button */}
-      <Button variant="outline" className="ml-auto" onClick={handleLoginLogout}>
+      <Button
+        variant="outline"
+        className="ml-auto"
+        onClick={handleLoginLogout}
+        disabled={isPending}
+      >
         {user ? "Logout" : "Login"}
       </Button>
     </nav>

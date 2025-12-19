@@ -1,4 +1,5 @@
-import axios from "./api";
+// src/app/services/authService.ts
+import { api } from "./api";
 
 interface LoginPayload {
   email: string;
@@ -6,15 +7,6 @@ interface LoginPayload {
 }
 
 export const loginUser = async (payload: LoginPayload) => {
-  // const response = await axios.post("/auth/login", payload);
-  const response = {
-    data:{
-      user:{
-        email: "waqar@gmail.com"
-      },
-      token:"1234567890"
-    }
-  }
-
-  return response.data;
+  const res = await api.post("/auths/sign-in/email", payload);
+  return res.data;
 };

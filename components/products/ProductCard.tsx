@@ -1,29 +1,70 @@
 "use client";
 
 import Image from "next/image";
-import { Product } from "@/app/services/product.service"
+import { useState } from "react";
+import { Product } from "@/app/services/product.service";
+import { Button } from "@/components/ui/button";
+import { ProductActionModal } from './ProductActionModal';
 
-export default function ProductCard({ title, brand, price, thumbnail }: Product) {
+type ActionType = "buy" | "gift";
+
+export default function ProductCard(product: Product) {
+  const [open, setOpen] = useState(false);
+  const [action, setAction] = useState<ActionType>("buy");
+
+  const openModal = (type: ActionType) => {
+    setAction(type);
+    setOpen(true);
+  };
+
   return (
-    <div className="group rounded-lg bg-card p-4 shadow-sm hover:shadow-md transition border border-border">
-      <div className="overflow-hidden rounded-md">
-        <Image
-          src={thumbnail}
-          width={500}
-          height={500}
-          alt={title}
-          className="aspect-square w-full object-cover group-hover:scale-105 transition"
-        />
-      </div>
-
-      <div className="mt-3 flex justify-between items-start">
-        <div>
-          <h3 className="text-sm font-semibold text-foreground">{title}</h3>
-          <p className="text-xs text-muted-foreground">{brand}</p>
+    <>
+      <div className="group rounded-lg bg-card p-4 shadow-sm hover:shadow-md transition border border-border">
+        <div className="overflow-hidden rounded-md">
+          <Image
+            src={product.thumbnail}
+            width={500}
+            height={500}
+            alt={product.title}
+            className="aspect-square w-full object-cover group-hover:scale-105 transition"
+          />
         </div>
 
-        <p className="text-sm font-bold text-primary">${price}</p>
+        <div className="mt-3">
+          <h3 className="text-sm font-semibold">{product.title}</h3>
+          <p className="text-xs text-muted-foreground">{product.description}</p>
+
+          <p className="mt-2 text-sm font-bold text-primary">
+            ${product.price}
+          </p>
+
+          {/* Actions */}
+          <div className="mt-4 flex gap-2">
+            <Button
+              className="w-1/2"
+              onClick={() => openModal("buy")}
+            >
+              Buy
+            </Button>
+
+            <Button
+              variant="secondary"
+              className="w-1/2"
+              onClick={() => openModal("gift")}
+            >
+              Send Gift
+            </Button>
+          </div>
+        </div>
       </div>
-    </div>
+
+      {/* Generic Modal */}
+      <ProductActionModal
+        open={open}
+        onOpenChange={setOpen}
+        action={action}
+        product={product}
+      />
+    </>
   );
 }

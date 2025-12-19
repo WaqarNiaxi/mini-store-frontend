@@ -1,19 +1,19 @@
-// src/store/userStore.ts
+// src/app/store/userStore.ts
 import { create } from "zustand";
 
+interface User {
+  id: string;
+  email: string;
+}
+
 interface UserState {
-  user: { email: string } | null;
-  token: string;
-  setUser: (user: { email: string }, token:string) => void;
-  logout: () => void;
+  user: User | null;
+  setUser: (user: User | null) => void;
+  clearUser: () => void;
 }
 
 export const useUserStore = create<UserState>((set) => ({
   user: null,
-  token: "",
-  setUser: (user, token) => {
-    set({ user, token });
-    localStorage.setItem("token", token); // persist token
-  },
-  logout: () => set({ user: null,token: "" }),
+  setUser: (user) => set({ user }),
+  clearUser: () => set({ user: null }),
 }));

@@ -1,17 +1,7 @@
-// src/services/api.ts
+// src/app/lib/axios.ts
 import axios from "axios";
-import { useUserStore } from "../store/userStore";
 
-const instance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+export const api = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL, // http://localhost:3000
+  withCredentials: true, // 🔥 REQUIRED for Better Auth
 });
-
-instance.interceptors.request.use((config) => {
-  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-  if (token && config.headers) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
-
-export default instance;
