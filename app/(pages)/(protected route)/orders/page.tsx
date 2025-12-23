@@ -12,47 +12,23 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Fragment, useState } from "react";
-
-
-type OrderItem = {
-  id: string;
-  productName: string;
-  price: number;
-  quantity: number;
-};
-
-type Order = {
-  id: string;
-  totalAmount: number;
-  createdAt: string;
-  items: OrderItem[];
-};
-
-const MOCK_ORDERS: Order[] = [
-  {
-    id: "ORD-1001",
-    totalAmount: 120,
-    createdAt: "2025-01-10",
-    items: [
-      { id: "1", productName: "Shoes", price: 60, quantity: 1 },
-      { id: "2", productName: "Cap", price: 30, quantity: 2 },
-    ],
-  },
-  {
-    id: "ORD-1002",
-    totalAmount: 80,
-    createdAt: "2025-01-12",
-    items: [{ id: "3", productName: "Bag", price: 80, quantity: 1 }],
-  },
-];
+import { useOrderQuery } from "@/app/hooks/queries/order/useOrderQuery";
+import { Loader } from "@/components/common/loader";
 
 export default function OrderPage() {
   const [openOrder, setOpenOrder] = useState<string | null>(null);
+  const {data,isLoading,isError}=useOrderQuery();
+ if (isLoading) {
+    return <Loader/>;
+  }
+
+  if (isError) {
+    return <p className="text-red-500 text-center py-10">Failed to load Order.</p>;
+  }
 
   return (
     <section className="max-w-6xl mx-auto px-4 py-12 space-y-6">
       <h1 className="text-3xl font-bold tracking-tight">Orders</h1>
-
       <Card>
         <CardHeader>
           <CardTitle>Order History</CardTitle>
@@ -70,7 +46,7 @@ export default function OrderPage() {
             </TableHeader>
 
             <TableBody>
-              {MOCK_ORDERS.map((order) => (
+              {data?.map((order) => (
                 <Fragment key={order.id}>
                   <TableRow key={order.id}>
                     <TableCell className="font-medium">{order.id}</TableCell>
@@ -104,14 +80,14 @@ export default function OrderPage() {
                         <div className="space-y-2">
                           {order.items.map((item) => (
                             <div
-                              key={item.id}
+                              key={item.productId}
                               className="flex justify-between text-sm"
                             >
                               <span>
-                                {item.productName} × {item.quantity}
+                                {item.product.title} × {item.quantity}
                               </span>
                               <span className="font-medium">
-                                ${item.price * item.quantity}
+                                ${Number(item.price) * item.quantity}
                               </span>
                             </div>
                           ))}

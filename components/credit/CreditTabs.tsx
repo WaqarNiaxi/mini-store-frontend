@@ -7,64 +7,24 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import { CreditTable } from "./CreditTable";
-import { CreditResponse } from "./credit.type";
+// import { CreditResponse } from "./credit.type";
+import { Loader } from "../common/loader";
+import { useCreatedTransactionQuery } from "@/app/hooks/queries/creditTransaction/useCreditQuery";
 
-const MOCK_DATA: CreditResponse = {
-  senderList: [
-    {
-      id: "1",
-      senderId: "a",
-      recipientId: "b",
-      amount: "100",
-      createdAt: "2025-12-18T09:57:34.025Z",
-      recipient: { name: "Ali", email: "ali@gmail.com" },
-    },
-    {
-      id: "2",
-      senderId: "a",
-      recipientId: "b",
-      amount: "100",
-      createdAt: "2025-12-18T09:57:34.025Z",
-      recipient: { name: "Ali", email: "ali@gmail.com" },
-    },
-    {
-      id: "3",
-      senderId: "a",
-      recipientId: "b",
-      amount: "100",
-      createdAt: "2025-12-18T09:57:34.025Z",
-      recipient: { name: "Ali", email: "ali@gmail.com" },
-    },
-  ],
-  recipientList: [
-    {
-      id: "1",
-      senderId: "a",
-      recipientId: "b",
-      amount: "100",
-      createdAt: "2025-12-18T09:57:34.025Z",
-      sender: { name: "Ali", email: "ali@gmail.com" },
-    },
-    {
-      id: "2",
-      senderId: "a",
-      recipientId: "b",
-      amount: "100",
-      createdAt: "2025-12-18T09:57:34.025Z",
-      sender: { name: "Ali", email: "ali@gmail.com" },
-    },
-    {
-      id: "3",
-      senderId: "a",
-      recipientId: "b",
-      amount: "100",
-      createdAt: "2025-12-18T09:57:34.025Z",
-      sender: { name: "Ali", email: "ali@gmail.com" },
-    },
-  ],
-};
+
 
 export function CreditTabs() {
+
+  const { data, isLoading, isError } = useCreatedTransactionQuery();
+  
+    if (isLoading) {
+      return <Loader/>;
+    }
+  
+    if (isError) {
+      return <p className="text-red-500 text-center py-10">Failed to load products.</p>;
+    }
+
   return (
     <Tabs defaultValue="sent">
       <TabsList>
@@ -75,7 +35,7 @@ export function CreditTabs() {
       <TabsContent value="sent">
         <CreditTable
           title="Sent Credits"
-          data={MOCK_DATA.senderList}
+          data={data?.senderList || []}
           emptyText="No credits sent yet."
           showUser="recipient"
         />
@@ -84,7 +44,7 @@ export function CreditTabs() {
       <TabsContent value="received">
         <CreditTable
           title="Received Credits"
-          data={MOCK_DATA.recipientList}
+          data={data?.recipientList || []}
           emptyText="No credits received yet."
           showUser="sender"
         />

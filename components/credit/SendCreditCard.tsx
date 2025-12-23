@@ -18,27 +18,18 @@ import {
   SendCreditFormValues,
 } from "@/app/zod-schemas/sendCreditSchema";
 
-type UserOption = {
-  id: string;
-  name: string;
-  email: string;
-};
-
-const MOCK_USERS: UserOption[] = [
-  { id: "1", name: "Ali", email: "ali@gmail.com" },
-  { id: "2", name: "Ahmed", email: "ahmed@gmail.com" },
-  { id: "3", name: "Ali", email: "ali@gmail.com" },
-  { id: "4", name: "Ahmed", email: "ahmed@gmail.com" },
-  { id: "5", name: "Ali", email: "ali@gmail.com" },
-  { id: "6", name: "Ahmed", email: "ahmed@gmail.com" },
-];
+import { useUserListQuery } from "@/app/hooks/queries/user/useUserQuery";
+import { useCreateCreditTransferMutation } from "@/app/hooks/queries/creditTransaction/useCreditQuery";
+import { Loader } from "../common/loader";
+import { AxiosError } from "axios";
 
 export function SendCreditCard() {
   const {
     handleSubmit,
     setValue,
-    formState: { errors, isSubmitting },
     watch,
+    reset,
+    formState: { errors },
   } = useForm<SendCreditFormValues>({
     resolver: zodResolver(sendCreditSchema),
     defaultValues: {
@@ -47,9 +38,45 @@ export function SendCreditCard() {
     },
   });
 
+
+  const {
+    data: users,
+    isLoading: isUsersLoading,
+    isError: isUsersError,
+  } = useUserListQuery();
+
+  const {
+    mutate,
+    isPending,
+    isError: isMutationError,
+    error: mutationError,
+    isSuccess,
+  } = useCreateCreditTransferMutation();
+
+
+  if (isUsersLoading) {
+    return <Loader />;
+  }
+
+  if (isUsersError) {
+    return (
+      <p className="text-red-500 text-center py-10">Failed to load users.</p>
+    );
+  }
+
+
   const onSubmit = (data: SendCreditFormValues) => {
-    // 🔥 Replace with React Query mutation
-    console.log("Send credit", data);
+    mutate(
+      {
+        recipientId: data.userId,
+        amount: Number(data.amount),
+      },
+      {
+        onSuccess: () => {
+          reset();
+        },
+      }
+    );
   };
 
   return (
@@ -60,7 +87,7 @@ export function SendCreditCard() {
 
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* User Select */}
+          
           <div className="space-y-1">
             <Select
               value={watch("userId")}
@@ -72,7 +99,7 @@ export function SendCreditCard() {
                 <SelectValue placeholder="Select user" />
               </SelectTrigger>
               <SelectContent>
-                {MOCK_USERS.map((user) => (
+                {users?.map((user) => (
                   <SelectItem key={user.id} value={user.id}>
                     {user.name} ({user.email})
                   </SelectItem>
@@ -87,7 +114,7 @@ export function SendCreditCard() {
             )}
           </div>
 
-          {/* Amount */}
+  
           <div className="space-y-1">
             <Input
               type="number"
@@ -107,12 +134,31 @@ export function SendCreditCard() {
             )}
           </div>
 
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={isSubmitting}
-          >
-            Send Credit
+
+          {isMutationError && (
+            <p className="text-sm text-red-500">
+              {(() => {
+                const err = mutationError as AxiosError<{ message: string }>;
+
+                if (err.response?.status === 400) {
+                  return err.response.data.message;
+                }
+
+                return "Failed to send credit";
+              })()}
+            </p>
+          )}
+
+         
+          {isSuccess && (
+            <p className="text-sm text-green-600">
+              Credit sent successfully 🎉
+            </p>
+          )}
+
+          
+          <Button type="submit" className="w-full" disabled={isPending}>
+            {isPending ? "Sending..." : "Send Credit"}
           </Button>
         </form>
       </CardContent>

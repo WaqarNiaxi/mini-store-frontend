@@ -1,6 +1,7 @@
 // src/components/header/Header.tsx
 "use client";
 
+import Image from "next/image";
 import DesktopMenu from "./DesktopMenu";
 import MobileMenu from "./MobileMenu";
 import Link from "next/link";
@@ -12,7 +13,12 @@ export default function Header() {
         
         {/* Logo */}
         <Link href="/" className="text-xl font-bold">
-          MyLogo
+          <Image
+  src="/download.png"
+  alt="Download"
+  width={100}
+  height={100}
+/>
         </Link>
 
         {/* Desktop Menu */}

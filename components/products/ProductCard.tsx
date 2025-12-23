@@ -4,13 +4,17 @@ import Image from "next/image";
 import { useState } from "react";
 import { Product } from "@/app/services/product.service";
 import { Button } from "@/components/ui/button";
-import { ProductActionModal } from './ProductActionModal';
+import { ProductActionModal } from "./ProductActionModal";
+import { useSession } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 type ActionType = "buy" | "gift";
 
 export default function ProductCard(product: Product) {
   const [open, setOpen] = useState(false);
   const [action, setAction] = useState<ActionType>("buy");
+  const { data: session } = useSession();
+  const router = useRouter();
 
   const openModal = (type: ActionType) => {
     setAction(type);
@@ -40,17 +44,26 @@ export default function ProductCard(product: Product) {
 
           {/* Actions */}
           <div className="mt-4 flex gap-2">
-            <Button
-              className="w-1/2"
-              onClick={() => openModal("buy")}
-            >
+            <Button className="w-1/2" onClick={() => {
+              if (!!session?.user) {
+                  openModal("buy")
+                } else {
+                  router.replace("/login");
+                }
+            }}>
               Buy
             </Button>
 
             <Button
               variant="secondary"
               className="w-1/2"
-              onClick={() => openModal("gift")}
+              onClick={() => {
+                if (!!session?.user) {
+                  openModal("gift");
+                } else {
+                  router.replace("/login");
+                }
+              }}
             >
               Send Gift
             </Button>
@@ -58,7 +71,7 @@ export default function ProductCard(product: Product) {
         </div>
       </div>
 
-      {/* Generic Modal */}
+      
       <ProductActionModal
         open={open}
         onOpenChange={setOpen}

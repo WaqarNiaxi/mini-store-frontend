@@ -31,7 +31,6 @@ export const LoginForm = () => {
 
     if (res?.error) {
       toast.error(res?.error?.message);
-      console.error(res);
       return;
     }
 

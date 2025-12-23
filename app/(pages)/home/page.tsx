@@ -4,12 +4,9 @@
 import ProductCard from "@/components/products/ProductCard";
 import { useProductsQuery } from "@/app/hooks/queries/product/useProductsQuery";
 import { Loader } from "@/components/common/loader";
-import { useUserListQuery } from "@/app/hooks/queries/user/useUserQuery";
-import { Button } from "@/components/ui/button";
 
 export default function ProductsPage() {
   const { data, isLoading, isError } = useProductsQuery();
-  const { data:userList, isLoading:userLoading } = useUserListQuery();
 
   if (isLoading) {
     return <Loader/>;
@@ -23,7 +20,6 @@ export default function ProductsPage() {
     <section className="bg-background py-16">
       <div className="max-w-7xl mx-auto px-4">
         <h2 className="text-2xl font-bold tracking-tight text-foreground">Product List</h2>
-        <Button onClick={()=>console.log(userList)}>Check</Button>
         <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {data?.map((product) => (
             <ProductCard key={product.id} {...product} />
@@ -34,3 +30,9 @@ export default function ProductsPage() {
     </section>
   );
 }
+
+
+
+
+
+
