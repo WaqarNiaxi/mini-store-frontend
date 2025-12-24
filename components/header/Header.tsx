@@ -11,7 +11,7 @@ export default function Header() {
       <div className="container mx-auto flex items-center justify-between py-4 px-4">
         {/* Logo */}
         <Link href="/" className="text-xl font-bold">
-          <Image src="/download.png" alt="Download" width={100} height={100} priority/>
+          <Image src="/download.png" alt="Download" width={75} height={75} className="w-[80%] h-auto" priority/>
         </Link>
 
         {/* Desktop Menu */}

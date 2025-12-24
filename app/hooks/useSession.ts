@@ -10,7 +10,7 @@ export const useSession = () => {
 
   useEffect(() => {
     api
-      .get("/api/auth/session")
+      .get("/auth/get-session")
       .then((res) => {
         setUser(res.data?.user ?? null);
       })

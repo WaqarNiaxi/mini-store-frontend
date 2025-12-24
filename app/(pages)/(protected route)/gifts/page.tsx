@@ -120,6 +120,7 @@ function GiftTable({
                         width={40}
                         height={40}
                         className="rounded-md border"
+                        priority
                       />
                       <span className="text-sm font-medium">
                         {gift.product.title}

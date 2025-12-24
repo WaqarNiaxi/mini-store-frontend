@@ -31,6 +31,7 @@ export default function ProductCard(product: Product) {
             height={500}
             alt={product.title}
             className="aspect-square w-full object-cover group-hover:scale-105 transition"
+            priority
           />
         </div>
 
@@ -44,13 +45,16 @@ export default function ProductCard(product: Product) {
 
           {/* Actions */}
           <div className="mt-4 flex gap-2">
-            <Button className="w-1/2" onClick={() => {
-              if (!!session?.user) {
-                  openModal("buy")
+            <Button
+              className="w-1/2"
+              onClick={() => {
+                if (!!session?.user) {
+                  openModal("buy");
                 } else {
                   router.replace("/login");
                 }
-            }}>
+              }}
+            >
               Buy
             </Button>
 
@@ -71,7 +75,6 @@ export default function ProductCard(product: Product) {
         </div>
       </div>
 
-      
       <ProductActionModal
         open={open}
         onOpenChange={setOpen}
