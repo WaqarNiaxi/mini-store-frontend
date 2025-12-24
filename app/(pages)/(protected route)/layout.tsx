@@ -1,7 +1,7 @@
-// app/(protected)/layout.tsx
 "use client";
 
 import { useAuthGuard } from "@/app/hooks/useAutGuard";
+import { Loader } from "@/components/common/loader";
 
 export default function ProtectedLayout({
   children,
@@ -12,7 +12,7 @@ export default function ProtectedLayout({
 
   // Block rendering completely
   if (isPending || !isAuthenticated) {
-    return null; // or full-screen loader
+    return <Loader/>;
   }
 
   return <>{children}</>;

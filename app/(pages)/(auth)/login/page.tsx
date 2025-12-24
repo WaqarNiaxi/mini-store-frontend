@@ -1,4 +1,3 @@
-// src/pages/auth/index.tsx
 "use client";
 
 import { useState } from "react";

@@ -1,4 +1,3 @@
-// src/components/header/DesktopMenu.tsx
 "use client";
 
 import Link from "next/link";
@@ -18,7 +17,12 @@ export default function DesktopMenu() {
   const handleLoginLogout = async () => {
     if (user) {
       await signOut();
-      queryClient.removeQueries({queryKey:['userList']})
+      queryClient.removeQueries({ queryKey: ["userList"] });
+      queryClient.removeQueries({ queryKey: ["creditTransaction"] });
+      queryClient.removeQueries({ queryKey: ["gifts"] });
+      queryClient.removeQueries({ queryKey: ["order"] });
+      queryClient.removeQueries({ queryKey: ["wallet"] });
+
       router.replace("/login");
     } else {
       router.push("/login");
@@ -29,9 +33,7 @@ export default function DesktopMenu() {
     <nav className="hidden md:flex gap-8 items-center">
       {MENU_ITEMS.map((item) => {
         const isActive =
-          item.href === "/"
-            ? pathname === "/"
-            : pathname.startsWith(item.href);
+          item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
 
         return (
           <Link

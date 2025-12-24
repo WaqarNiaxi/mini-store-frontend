@@ -1,4 +1,3 @@
-// src/components/header/Header.tsx
 "use client";
 
 import Image from "next/image";
@@ -10,15 +9,9 @@ export default function Header() {
   return (
     <header className="border-b bg-white sticky top-0 z-50">
       <div className="container mx-auto flex items-center justify-between py-4 px-4">
-        
         {/* Logo */}
         <Link href="/" className="text-xl font-bold">
-          <Image
-  src="/download.png"
-  alt="Download"
-  width={100}
-  height={100}
-/>
+          <Image src="/download.png" alt="Download" width={100} height={100} priority/>
         </Link>
 
         {/* Desktop Menu */}

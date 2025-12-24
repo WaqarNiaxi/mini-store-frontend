@@ -1,4 +1,3 @@
-// src/components/forms/SignUpForm.tsx
 "use client";
 
 import { useForm } from "react-hook-form";
